@@ -55,7 +55,12 @@ int calcular_destino_PG(int origem, int movimento) {
     return origem + pow(2, movimento-1) * (movimento % 2 ? 1 : -1);
 }
 
-int simulacao() {
+
+/*
+Se o parametro "algoritmo" for 1, fara o zigue-zague seguindo uma P.A.
+Se o parametro "algoritmo" for 2, fara o zigue-zague seguindo uma P.G.
+*/
+int simulacao(int algoritmo) {
     int pos_objeto = sortear(20, 60);
     int pos_inicial_robo = 40;
     int total_passos = 0;
@@ -63,7 +68,7 @@ int simulacao() {
     int origem = pos_inicial_robo, destino;
 
     while (1) {
-        destino = calcular_destino_PG(origem, i);
+        destino = (algoritmo==1) ? calcular_destino_PA(origem, i) : calcular_destino_PG(origem, i);
         int resultado = mover(origem, destino, pos_objeto);
 
         if (resultado) {  // encontrou o objeto!!
@@ -82,14 +87,19 @@ int simulacao() {
 int main() {
 
     srand(time(NULL));
-    int total_global = 0;
+    int teste, total_PA = 0, total_PG = 0;
 
-    int teste;
     for (teste = 1; teste <= N_TESTES; teste++) {
-        total_global += simulacao();
+        total_PA += simulacao(1);
     }
 
-    printf("\n\nNumero medio de passos = %.2f\n\n", ((float)total_global)/N_TESTES);
+    for (teste = 1; teste <= N_TESTES; teste++) {
+        total_PG += simulacao(2);
+    }
+
+    printf("\nNumero medio de passos (PA) = %.2f", ((float)total_PA)/N_TESTES);
+    printf("\nNumero medio de passos (PG) = %.2f\n\n", ((float)total_PG)/N_TESTES);
+
     return 0;
 }
 
